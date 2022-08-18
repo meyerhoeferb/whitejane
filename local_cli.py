@@ -3,9 +3,12 @@ cli for playing blackjack locally, no server
 
 only single player
 """
+from termcolor import colored, cprint
 from blackjack import BlackJack
 
+
 CARD_MAP = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"]
+POINTS_MAP = [11, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10]
 
 
 def cli():
@@ -20,15 +23,26 @@ def cli():
             # deal hand
             bj.start_game()
             # player turn loop
-            while bj.current_player <= bj.num_players:
-                print(f"YOUR HAND: {get_player_hand(bj)}")
+            game_over = False
+            while bj.current_player <= bj.num_players and not game_over:
+                print(f"YOUR HAND: {player_hand_to_string(bj)}")
                 action = player_menu()
 
                 # handle action
-                if action == "stand":
+                if action == "STAND":
                     break
+                elif action == "HIT":
+                    hit(bj)
+                    # check for bust
 
     print("Thanks for playing!")
+
+
+def hit(bj: BlackJack):
+    """
+    make a hit call to the blackjack object
+    """
+    bj.hit()
 
 
 def card_int_to_string(card: int) -> str:
@@ -38,7 +52,7 @@ def card_int_to_string(card: int) -> str:
     return CARD_MAP[card % 13]
 
 
-def get_player_hand(bj: BlackJack) -> str:
+def player_hand_to_string(bj: BlackJack) -> str:
     """
     gets the current players hand from the game object and displays it
     """
@@ -46,16 +60,23 @@ def get_player_hand(bj: BlackJack) -> str:
 
     hand_str = [card_int_to_string(c) for c in hand]
 
-    return " ".join(hand_str)
+    return colored(" ".join(hand_str), "blue")
 
 
 def player_menu() -> str:
     """
     displays the options the player can take and returns it as a string
     """
-    print("player menu goes here")
+    actions = ["HIT", "STAND"]
+    actions_to_print = colored("\t".join(actions), "green")
+    print(f"PLAYER ACTIONS: {actions_to_print}")
+    while True:
+        p_action = input("Select an action: ").upper()
+        if p_action not in actions:
+            print("unrecognized command")
+            continue
 
-    return "stand"
+        return p_action
 
 
 def main_menu() -> bool:
@@ -73,6 +94,11 @@ def main_menu() -> bool:
             return False
         else:
             print("Unrecognized input")
+
+
+# colored print methods
+def print_green(s):
+    return cprint(s, "green")
 
 
 if __name__ == "__main__":

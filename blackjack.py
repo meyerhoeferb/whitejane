@@ -39,6 +39,7 @@ class BlackJack:
         return [self._draw_card(), self._draw_card()]
 
     # interface methods
+
     def start_game(self, num_players: int = 1):
         """
         deal a new hand for however many players + the dealer
@@ -46,6 +47,7 @@ class BlackJack:
         defaults to 1 player
         """
         self.deck = self._shuffle_deck()
+        self.current_player = 1
         self.num_players = num_players
 
         # one more than num players (for dealer)
@@ -64,3 +66,12 @@ class BlackJack:
             return self.hands[self.current_player]
         else:
             return self.hands[player]
+
+    def hit(self):
+        """
+        draw a card for the current player
+        """
+        if len(self.deck) == 0:
+            raise Exception("Tried to draw from empty deck")
+
+        self.hands[self.current_player].append(self._draw_card())

@@ -5,6 +5,7 @@ name = "pypi"
 
 [packages]
 black = "*"
+termcolor = "*"
 
 [dev-packages]
 pytest = "*"
