@@ -18,6 +18,7 @@ def cli():
     # gameplay loop
     play = True
     while play:
+        print("\n\n\n\n")
         play = main_menu()
         if play:
             # deal hand
@@ -25,7 +26,7 @@ def cli():
             # player turn loop
             game_over = False
             while bj.current_player <= bj.num_players and not game_over:
-                print(f"YOUR HAND: {player_hand_to_string(bj)}")
+                print_blue(f"\nYOUR HAND: {player_hand_to_string(bj)} ({player_score_to_string(bj)})")
                 action = player_menu()
 
                 # handle action
@@ -34,8 +35,28 @@ def cli():
                 elif action == "HIT":
                     hit(bj)
                     # check for bust
+                    if check_for_bust(bj):
+                        print_on_red(bust_message(bj))
+                        game_over = True
 
     print("Thanks for playing!")
+
+
+def check_for_bust(bj) -> bool:
+    """
+    returns true if the current player busted
+    """
+    if bj.get_player_score() > 21:
+        return True
+
+    return False
+
+
+def bust_message(bj):
+    """
+    returns the message to display on bust as a string
+    """
+    return f"BUSTED! YOUR HAND: {player_hand_to_string(bj)} ({player_score_to_string(bj)})"
 
 
 def hit(bj: BlackJack):
@@ -54,13 +75,21 @@ def card_int_to_string(card: int) -> str:
 
 def player_hand_to_string(bj: BlackJack) -> str:
     """
-    gets the current players hand from the game object and displays it
+    gets the current players hand from the game object and converts it to human readable
     """
     hand = bj.get_player_hand()
 
     hand_str = [card_int_to_string(c) for c in hand]
 
-    return colored(" ".join(hand_str), "blue")
+    return " ".join(hand_str)
+
+
+def player_score_to_string(bj: BlackJack) -> str:
+    """
+    get the current players score as a string
+    """
+    score = bj.get_player_score()
+    return str(score)
 
 
 def player_menu() -> str:
@@ -68,8 +97,9 @@ def player_menu() -> str:
     displays the options the player can take and returns it as a string
     """
     actions = ["HIT", "STAND"]
-    actions_to_print = colored("\t".join(actions), "green")
-    print(f"PLAYER ACTIONS: {actions_to_print}")
+    actions_to_print = "\t".join(actions)
+    print(f"PLAYER ACTIONS:")
+    print_green(actions_to_print)
     while True:
         p_action = input("Select an action: ").upper()
         if p_action not in actions:
@@ -98,7 +128,19 @@ def main_menu() -> bool:
 
 # colored print methods
 def print_green(s):
-    return cprint(s, "green")
+    print(colored(s, "green"))
+
+
+def print_blue(s):
+    print(colored(s, "blue"))
+
+
+def print_yellow(s):
+    print(colored(s, "yellow"))
+
+
+def print_on_red(s):
+    print(colored(s, on_color="on_red"))
 
 
 if __name__ == "__main__":
