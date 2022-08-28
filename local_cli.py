@@ -18,16 +18,17 @@ def cli():
     # gameplay loop
     play = True
     while play:
-        print("\n\n\n\n")
+        print("\n\n\n")
         play = main_menu()
         if play:
             # deal hand
-            bj.start_game()
+            bj.start_hand()
 
             # player turn loop
             while bj.current_player <= bj.num_players:
                 turn_over = False
                 print_blue(f"\nYOUR HAND: {player_hand_to_string(bj)} ({player_score_to_string(bj)})")
+                print_red(f"DEALERS HAND: {dealer_hand_to_string(bj)}")
                 action = player_menu()
 
                 # handle action
@@ -96,6 +97,19 @@ def player_hand_to_string(bj: BlackJack) -> str:
     return " ".join(hand_str)
 
 
+def dealer_hand_to_string(bj: BlackJack, hidden: bool = True) -> str:
+    """
+    gets the dealers hand from the game object and converts it to human readable
+
+    if hidden is true (the default), it keeps the dealers first card secret
+    """
+    hand = bj.get_dealer_hand(hidden)
+
+    hand_str = [card_int_to_string(c) if c != -1 else "X" for c in hand]
+
+    return " ".join(hand_str)
+
+
 def player_score_to_string(bj: BlackJack) -> str:
     """
     get the current players score as a string
@@ -149,6 +163,10 @@ def print_blue(s):
 
 def print_yellow(s):
     print(colored(s, "yellow"))
+
+
+def print_red(s):
+    print(colored(s, "red"))
 
 
 def print_on_red(s):

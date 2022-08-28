@@ -67,7 +67,7 @@ class BlackJack:
 
     # interface methods
 
-    def start_game(self, num_players: int = 1):
+    def start_hand(self, num_players: int = 1):
         """
         deal a new hand for however many players + the dealer
 
@@ -95,6 +95,17 @@ class BlackJack:
         else:
             return self.hands[player]
 
+    def get_dealer_hand(self, hidden: bool = True) -> list[int]:
+        """
+        returns the dealers hand as a list of ints
+        by default keeps the first card secret
+        """
+        dealer_hand = self.hands[0]
+        if hidden:
+            dealer_hand[0] = -1
+
+        return dealer_hand
+
     def hit(self):
         """
         draw a card for the current player
@@ -117,6 +128,19 @@ class BlackJack:
             return self.scores[self.current_player]
         else:
             return self.scores[player]
+
+    def get_dealer_score(self):
+        """
+        returns the dealers score
+
+        remember that this is only really useful at the end of a hand, dealer score is not known
+        during the hand
+        """
+        # only allow usage if all players have gone
+        if self.current_player > self.num_players:
+            raise Exception("You dirty cheater no checking dealer score until players are done")
+
+        return self.scores[0]
 
     def end_turn(self):
         """
