@@ -23,23 +23,35 @@ def cli():
         if play:
             # deal hand
             bj.start_game()
+
             # player turn loop
-            game_over = False
-            while bj.current_player <= bj.num_players and not game_over:
+            while bj.current_player <= bj.num_players:
+                turn_over = False
                 print_blue(f"\nYOUR HAND: {player_hand_to_string(bj)} ({player_score_to_string(bj)})")
                 action = player_menu()
 
                 # handle action
                 if action == "STAND":
-                    break
+                    turn_over = True
                 elif action == "HIT":
                     hit(bj)
                     # check for bust
                     if check_for_bust(bj):
                         print_on_red(bust_message(bj))
-                        game_over = True
+                        turn_over = True
+
+                # check if the turn has finished
+                if turn_over:
+                    end_player_turn(bj)
 
     print("Thanks for playing!")
+
+
+def end_player_turn(bj: BlackJack):
+    """
+    makes the call to bj object to end current players turn
+    """
+    bj.end_turn()
 
 
 def check_for_bust(bj) -> bool:

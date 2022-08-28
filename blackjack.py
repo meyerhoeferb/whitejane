@@ -117,3 +117,9 @@ class BlackJack:
             return self.scores[self.current_player]
         else:
             return self.scores[player]
+
+    def end_turn(self):
+        """
+        ends the current players turn
+        """
+        self.current_player += 1
